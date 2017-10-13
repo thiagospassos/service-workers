@@ -11,6 +11,6 @@ self.addEventListener('fetch', function (event) {
     console.log(`FETCH: ${event.request.url}`);
 
     if(event.request.url.endsWith("png")){
-        event.respondWith(fetch('/images/ie.png'));
+        event.respondWith(fetch('./images/ie.png'));
     }
 });
