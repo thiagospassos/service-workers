@@ -1,0 +1,13 @@
+body {
+    padding-top: 50px;
+  }
+  .starter-template {
+    padding: 40px 15px;
+    text-align: center;
+  }
+
+  .list-group-item img{
+      max-height: 100px;
+      padding: 0 15px 15px 0;
+      float:left;
+  }
