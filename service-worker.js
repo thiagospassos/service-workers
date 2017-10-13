@@ -32,7 +32,10 @@ self.addEventListener('sync', function (event) {
     console.log(event);
     if (event.tag == 'demo-sync') {
         event.waitUntil(doSomeStuff().then(() => {
-            self.registration.showNotification('Sync event fired!');
+            self.registration.showNotification('Sync event fired!',{
+                icon:"./images/chrome.png",
+                body:"Aweeeeesome! I'm in sync now."
+            });
         }).catch(() => {
             console.error("Error syncing");
         }));
