@@ -1,5 +1,6 @@
-### Service Workers Demo
+# Service Workers Demo
 
+## Run Steps
 ```
 npm install http-server -g  
 http-server
