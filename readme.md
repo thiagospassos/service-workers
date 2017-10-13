@@ -1,2 +1,6 @@
-npm install http-server -g
+### Service Workers Demo
+
+```
+npm install http-server -g  
 http-server
+```
