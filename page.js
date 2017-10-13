@@ -1,11 +1,22 @@
 if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-      navigator.serviceWorker.register('./service-worker.js').then(function(registration) {
-        // Registration was successful
-        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-      }, function(err) {
-        // registration failed :(
-        console.log('ServiceWorker registration failed: ', err);
-      });
+    window.addEventListener('load', function () {
+        navigator.serviceWorker.register('./service-worker.js').then(function (registration) {
+
+            Notification.requestPermission(function (result) {
+                console.log(`REGISTER: requesting permission ${result}`);
+            });
+
+            document.getElementById('sync').addEventListener('click', () => {
+                registration.sync.register('demo-sync').then(() => {
+                    console.log('sync registered');
+                }).catch(function (error) {
+                    console.log('Unable to fetch image.');
+                });
+            });
+
+        }, function (err) {
+            // registration failed :(
+            console.log('ServiceWorker registration failed: ', err);
+        });
     });
-  }
+}
