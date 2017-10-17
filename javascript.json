@@ -30,10 +30,10 @@
 			"        '/images/safari.png',",
 			"        'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'",
 			"    ];",
-			"    caches.delete('sw-cache');",
+			"    caches.delete(_cache);",
 			"",
 			"    event.waitUntil(",
-			"        caches.open('sw-cache')",
+			"        caches.open(_cache)",
 			"            .then(cache => cache.addAll(urlsToCache))",
 			"            .then(_ => self.skipWaiting()));",
 			"});"
@@ -92,12 +92,12 @@
 			"        .then(networkResponse => {",
 			"            console.log(`WORKER: Updating cache: ${event.request.url}`);",
 			"            var clone = networkResponse.clone();",
-			"            caches.open('sw-cache').then(cache => cache.put(event.request, clone));",
+			"            caches.open(_cache).then(cache => cache.put(event.request, clone));",
 			"            return networkResponse;",
 			"        })",
 			"        .catch(_ => {",
 			"            console.log(`WORKER: Serving from cache: ${event.request.url}`);",
-			"            return caches.open('sw-cache').then(cache => cache.match(event.request));",
+			"            return caches.open(_cache).then(cache => cache.match(event.request));",
 			"        })",
 			"    );",
 			"});"
@@ -118,16 +118,23 @@
 	"Service Worker #4": {
 		"prefix": "sw-reg2",
 		"body": [
-			"window.addEventListener('load',function(){",
-			"    navigator.serviceWorker.register('./service-worker.js').then(function(registration){",
-			"        console.log('REGISTER: successful');",
-			"        Notification.requestPermission(function (result) {",
-			"            console.log(`REGISTER: requesting permission ${result}`);",
+			"if ('serviceWorker' in navigator) {",
+			"    window.addEventListener('load', function () {",
+			"        navigator.serviceWorker.register('./service-worker.js').then(function (registration) {",
+			"                        ",
+			"            document.getElementById('sync').addEventListener('click', () => {",
+			"                registration.sync.register('demo-sync').then(() => {",
+			"                    console.log('sync registered');",
+			"                }).catch(function (error) {",
+			"                    console.log('Unable to fetch image.');",
+			"                });",
+			"            });",
+			"",
+			"        }, function (err) {",
+			"            console.log('ServiceWorker registration failed: ', err);",
 			"        });",
-			"    }).catch(function(err){",
-			"        console.error('REGISTER: error');",
 			"    });",
-			"});"
+			"}"
 		]
 	},
 	"Service Worker #5": {
@@ -154,6 +161,49 @@
 			"        });",
 			"    });",
 			"}"
+		]
+	},
+	"Service Worker #51": {
+		"prefix": "sw-sync1",
+		"body": [
+			"self.addEventListener('sync', function (event) {",
+			"    if (event.tag == 'demo-sync') {",
+			"        doSomeStuff(event.tag);",
+			"    }",
+			"})"
+		]
+	},
+	"Service Worker #56": {
+		"prefix": "sw-sync2",
+		"body": [
+			"self.addEventListener('sync', function (event) {",
+			"    if (event.tag == 'demo-sync') {",
+			"        doSomeStuff(event.tag).then(result => {",
+			"            self.registration.showNotification('Sync worked', {",
+			"                body: 'worked',",
+			"                icon: './images/safari.png'",
+			"            })",
+			"        });",
+			"    }",
+			"});"
+		]
+	},
+	"Service Worker #511": {
+		"prefix": "sw-push1",
+		"body": [
+			"self.addEventListener('push', function (event) {",
+			"    console.log('[Service Worker] Push Received.');",
+			"    console.log(`[Service Worker] Push had this data: \"$${event.data.text()}\"`);",
+			"",
+			"    const title = 'Push';",
+			"    const options = {",
+			"        body: 'Yay it works.',",
+			"        icon: './images/chrome.png',",
+			"        badge: './images/ie.png'",
+			"    };",
+			"",
+			"    event.waitUntil(self.registration.showNotification(title, options));",
+			"});"
 		]
 	}
 }
