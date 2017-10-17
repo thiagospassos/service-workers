@@ -1,0 +1,159 @@
+{
+	// Place your snippets for JavaScript here. Each snippet is defined under a snippet name and has a prefix, body and 
+	// description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. Placeholders with the 
+	// same ids are connected.
+	// Example:
+	"Service Worker #1": {
+		"prefix": "sw-ins1",
+		"body": [
+			"self.importScripts('./util/util.js');",
+			"const _cache = 'sw-cache';",
+			"self.addEventListener('install', function (event) {",
+			"console.log('Install event');",
+			"event.waitUntil(self.skipWaiting());",
+			"});"
+		]
+	},
+	"Service Worker #12": {
+		"prefix": "sw-ins2",
+		"body": [
+			"self.addEventListener('install', function (event) {",
+			"",
+			"    const urlsToCache = [",
+			"        '/',",
+			"        '/page.js',",
+			"        '/styles/starter-template.css',",
+			"        '/images/chrome.png',",
+			"        '/images/firefox.png',",
+			"        '/images/ie.png',",
+			"        '/images/safari.png',",
+			"        'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'",
+			"    ];",
+			"    caches.delete('sw-cache');",
+			"",
+			"    event.waitUntil(",
+			"        caches.open('sw-cache')",
+			"            .then(cache => cache.addAll(urlsToCache))",
+			"            .then(_ => self.skipWaiting()));",
+			"});"
+		]
+	},
+	"Service Worker #2": {
+		"prefix": "sw-fet1",
+		"body": [
+			"self.addEventListener('fetch', function (event) {",
+			"",
+			"    console.log(`FETCH: ${event.request.url}`);",
+			"",
+			"    if (event.request.url.endsWith(\"png\")) {",
+			"        event.respondWith(fetch('./images/chrome.png'));",
+			"    }",
+			"});"
+		]
+	},
+	"Service Worker #21": {
+		"prefix": "sw-fet2",
+		"body": [
+			"self.addEventListener('fetch', function (event) {",
+			"",
+			"    console.log(`FETCH: ${event.request.url}`);",
+			"",
+			"    event.respondWith(caches.match(event.request));",
+			"});"
+		]
+	},
+	"Service Worker #211": {
+		"prefix": "sw-fet3",
+		"body": [
+			"self.addEventListener('fetch', function (event) {",
+			"",
+			"    console.log(`FETCH: ${event.request.url}`);",
+			"",
+			"    event.respondWith(",
+			"        fetch(event.request).then(response=>{",
+			"            console.log(`WORKER: Service $${event.request.url} from network`);",
+			"            return response;",
+			"        },()=>{",
+			"            console.log(`WORKER: Service $${event.request.url} from cache`);",
+			"            return caches.match(event.request);",
+			"        })",
+			"    );",
+			"});"
+		]
+	},
+	"Service Worker #2111": {
+		"prefix": "sw-fet4",
+		"body": [
+			"self.addEventListener('fetch', function (event) {",
+			"    console.log(`FETCH: ${event.request.url}`);",
+			"",
+			"    event.respondWith(fetch(event.request)",
+			"        .then(networkResponse => {",
+			"            console.log(`WORKER: Updating cache: ${event.request.url}`);",
+			"            var clone = networkResponse.clone();",
+			"            caches.open('sw-cache').then(cache => cache.put(event.request, clone));",
+			"            return networkResponse;",
+			"        })",
+			"        .catch(_ => {",
+			"            console.log(`WORKER: Serving from cache: ${event.request.url}`);",
+			"            return caches.open('sw-cache').then(cache => cache.match(event.request));",
+			"        })",
+			"    );",
+			"});"
+		]
+	},
+	"Service Worker #3": {
+		"prefix": "sw-reg1",
+		"body": [
+			"window.addEventListener('load',function(){",
+			"    navigator.serviceWorker.register('./service-worker.js').then(function(registration){",
+			"        console.log(\"REGISTER: successful\");",
+			"    }).catch(function(err){",
+			"        console.error(\"REGISTER: error\");",
+			"    });",
+			"});"
+		]
+	},
+	"Service Worker #4": {
+		"prefix": "sw-reg2",
+		"body": [
+			"window.addEventListener('load',function(){",
+			"    navigator.serviceWorker.register('./service-worker.js').then(function(registration){",
+			"        console.log('REGISTER: successful');",
+			"        Notification.requestPermission(function (result) {",
+			"            console.log(`REGISTER: requesting permission ${result}`);",
+			"        });",
+			"    }).catch(function(err){",
+			"        console.error('REGISTER: error');",
+			"    });",
+			"});"
+		]
+	},
+	"Service Worker #5": {
+		"prefix": "sw-reg3",
+		"body": [
+			"if ('serviceWorker' in navigator) {",
+			"    window.addEventListener('load', function () {",
+			"        navigator.serviceWorker.register('./service-worker.js').then(function (registration) {",
+			"",
+			"            Notification.requestPermission(function (result) {",
+			"                console.log(`REGISTER: requesting permission $${result}`);",
+			"            });",
+			"",
+			"            document.getElementById('sync').addEventListener('click', () => {",
+			"                registration.sync.register('demo-sync').then(() => {",
+			"                    console.log('sync registered');",
+			"                }).catch(function (error) {",
+			"                    console.log('Unable to fetch image.');",
+			"                });",
+			"            });",
+			"",
+			"        }, function (err) {",
+			"            console.log('ServiceWorker registration failed: ', err);",
+			"        });",
+			"    });",
+			"}"
+		]
+	}
+}
