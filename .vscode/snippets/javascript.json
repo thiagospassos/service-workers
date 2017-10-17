@@ -206,5 +206,11 @@
 			"    event.waitUntil(self.registration.showNotification(title, options));",
 			"});"
 		]
+	},
+	"Service Worker #5111": {
+		"prefix": "sw-test",
+		"body": [
+			"console.log(${1})"
+		]
 	}
 }
