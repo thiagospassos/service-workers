@@ -9,9 +9,10 @@
 		"body": [
 			"self.importScripts('./util/util.js');",
 			"const _cache = 'sw-cache';",
+			"",
 			"self.addEventListener('install', function (event) {",
-			"console.log('Install event');",
-			"event.waitUntil(self.skipWaiting());",
+			"    console.log('Install event');",
+			"    event.waitUntil(self.skipWaiting());",
 			"});"
 		]
 	},
