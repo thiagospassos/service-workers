@@ -16,11 +16,18 @@
 			"});"
 		]
 	},
-	"Service Worker #12": {
-		"prefix": "sw-ins2",
+	"Service Worker - sw-ins-notify": {
+		"prefix": "sw-ins-notify",
 		"body": [
-			"self.addEventListener('install', function (event) {",
-			"",
+			" self.registration.showNotification('Hooray!!!', {",
+			"    body: 'Service worker installed',",
+			"    icon: './images/chrome.png'",
+			"});"
+		]
+	},
+	"Service Worker - sw-ins11": {
+		"prefix": "sw-ins11",
+		"body": [
 			"    const urlsToCache = [",
 			"        '/',",
 			"        '/page.js',",
@@ -31,13 +38,11 @@
 			"        '/images/safari.png',",
 			"        'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'",
 			"    ];",
-			"    caches.delete(_cache);",
 			"",
 			"    event.waitUntil(",
 			"        caches.open(_cache)",
 			"            .then(cache => cache.addAll(urlsToCache))",
-			"            .then(_ => self.skipWaiting()));",
-			"});"
+			"            .then(_ => self.skipWaiting()));"
 		]
 	},
 	"Service Worker #2": {
@@ -47,30 +52,26 @@
 			"",
 			"    console.log(`FETCH: ${event.request.url}`);",
 			"",
+			"});"
+		]
+	},
+	"Service Worker - sw-fet-prank": {
+		"prefix": "sw-fet-prank",
+		"body": [
 			"    if (event.request.url.endsWith(\"png\")) {",
 			"        event.respondWith(fetch('./images/chrome.png'));",
-			"    }",
-			"});"
+			"    }"
 		]
 	},
-	"Service Worker #21": {
-		"prefix": "sw-fet2",
+	"Service Worker- sw-fet-cache": {
+		"prefix": "sw-fet-cache",
 		"body": [
-			"self.addEventListener('fetch', function (event) {",
-			"",
-			"    console.log(`FETCH: ${event.request.url}`);",
-			"",
-			"    event.respondWith(caches.match(event.request));",
-			"});"
+			"event.respondWith(caches.match(event.request));"
 		]
 	},
-	"Service Worker #211": {
-		"prefix": "sw-fet3",
+	"Service Worker - sw-fet-cache2": {
+		"prefix": "sw-fet-cache2",
 		"body": [
-			"self.addEventListener('fetch', function (event) {",
-			"",
-			"    console.log(`FETCH: ${event.request.url}`);",
-			"",
 			"    event.respondWith(",
 			"        fetch(event.request).then(response=>{",
 			"            console.log(`WORKER: Service $${event.request.url} from network`);",
@@ -79,29 +80,15 @@
 			"            console.log(`WORKER: Service $${event.request.url} from cache`);",
 			"            return caches.match(event.request);",
 			"        })",
-			"    );",
-			"});"
+			"    );"
 		]
 	},
-	"Service Worker #2111": {
-		"prefix": "sw-fet4",
+	"Service Worker - sw-fet-cache3": {
+		"prefix": "sw-fet-cache3",
 		"body": [
-			"self.addEventListener('fetch', function (event) {",
-			"    console.log(`FETCH: ${event.request.url}`);",
-			"",
-			"    event.respondWith(fetch(event.request)",
-			"        .then(networkResponse => {",
-			"            console.log(`WORKER: Updating cache: ${event.request.url}`);",
-			"            var clone = networkResponse.clone();",
-			"            caches.open(_cache).then(cache => cache.put(event.request, clone));",
-			"            return networkResponse;",
-			"        })",
-			"        .catch(_ => {",
-			"            console.log(`WORKER: Serving from cache: ${event.request.url}`);",
-			"            return caches.open(_cache).then(cache => cache.match(event.request));",
-			"        })",
-			"    );",
-			"});"
+			"var clone = networkResponse.clone();",
+			"caches.open(_cache).then(cache => cache.put(event.request, clone));",
+			"return networkResponse;"
 		]
 	},
 	"Service Worker #3": {
@@ -116,58 +103,50 @@
 			"});"
 		]
 	},
-	"Service Worker #4": {
-		"prefix": "sw-reg2",
+	"Service Worker - sw-reg-sync": {
+		"prefix": "sw-reg-sync",
 		"body": [
-			"if ('serviceWorker' in navigator) {",
-			"    window.addEventListener('load', function () {",
-			"        navigator.serviceWorker.register('./service-worker.js').then(function (registration) {",
-			"                        ",
-			"            document.getElementById('sync').addEventListener('click', () => {",
-			"                registration.sync.register('demo-sync').then(() => {",
-			"                    console.log('sync registered');",
-			"                }).catch(function (error) {",
-			"                    console.log('Unable to fetch image.');",
-			"                });",
-			"            });",
-			"",
-			"        }, function (err) {",
-			"            console.log('ServiceWorker registration failed: ', err);",
-			"        });",
+			"document.getElementById('sync').addEventListener('click', () => {",
+			"    registration.sync.register('demo-sync').then(() => {",
+			"        console.log('sync registered');",
+			"    }).catch(function (error) {",
+			"        console.log('Unable to register sync.');",
 			"    });",
-			"}"
+			"});"
 		]
 	},
-	"Service Worker #5": {
-		"prefix": "sw-reg3",
+	"Service Worker - sw-reg-push": {
+		"prefix": "sw-reg-push",
 		"body": [
-			"if ('serviceWorker' in navigator) {",
-			"    window.addEventListener('load', function () {",
-			"        navigator.serviceWorker.register('./service-worker.js').then(function (registration) {",
-			"",
-			"            Notification.requestPermission(function (result) {",
-			"                console.log(`REGISTER: requesting permission $${result}`);",
-			"            });",
-			"",
-			"            document.getElementById('sync').addEventListener('click', () => {",
-			"                registration.sync.register('demo-sync').then(() => {",
-			"                    console.log('sync registered');",
-			"                }).catch(function (error) {",
-			"                    console.log('Unable to fetch image.');",
-			"                });",
-			"            });",
-			"",
-			"        }, function (err) {",
-			"            console.log('ServiceWorker registration failed: ', err);",
-			"        });",
-			"    });",
-			"}"
+			"Notification.requestPermission(function (result) {",
+			"    console.log(`REGISTER: requesting permission $${result}`);",
+			"});"
 		]
 	},
-	"Service Worker #51": {
-		"prefix": "sw-sync1",
+	"Service Worker - sw-reg-online": {
+		"prefix": "sw-reg-online",
+		"body": [
+			"function isOnline() {",
+			"    var connectionStatus = document.getElementById('connectionStatus');",
+			"",
+			"    if (navigator.onLine) {",
+			"        connectionStatus.innerHTML = 'You are currently online!';",
+			"    } else {",
+			"        connectionStatus.innerHTML = 'You are currently offline. Any requests made will be queued and synced as soon as you are connected again.';",
+			"    }",
+			"}",
+			"",
+			"window.addEventListener('online', isOnline);",
+			"window.addEventListener('offline', isOnline);",
+			"isOnline();"
+		]
+	},
+	"Service Worker sw-sync": {
+		"prefix": "sw-sync",
 		"body": [
 			"self.addEventListener('sync', function (event) {",
+			"    console.info('WORKER: Sync Event');",
+			"    console.log(event);",
 			"    if (event.tag == 'demo-sync') {",
 			"        doSomeStuff(event.tag);",
 			"    }",
